@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>index</title>
+    <!--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+    <style>.content {padding-top: 80px;}</style>
+  </head>
+
+  <body>
+
+    {%- block topbar -%}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <h2>
+                    <a href="/" class="brand">PHILIP</a> <small>Hi there.</small>
+                </h2>
+            </div>
+            <div class="navbar-collapse">
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    {%- endblock -%}
+
+
+    <div class="container">
+        <div class="content">
+            {% block page_header %}{% endblock %}
+            {% block content %}
+                {% for blog in blogs %}
+                  <div><h2><a href={{ url_for('get_blog', blog_id=blog.id) }}>{{ blog.title }}</a></p></div>
+                  <div><h3>{{ blog.description }}</h3></div>
+                  <div><p>{{ blog.content|truncate(100) }}</p></div>
+                  <div><strong>{{ blog.author }}</strong></div>
+                  <div><em>First posted: {{ blog["created-date"] }}</em></div>
+                  <div><em>Updated: {{ blog["last-update"] }}</em></div>
+                {% endfor %}
+            {% endblock %}
+        </div>
+    </div>
+    {% block js_footer %}{% endblock %}
+  </body>
+</html>

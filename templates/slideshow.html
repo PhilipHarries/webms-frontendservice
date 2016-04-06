@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Album slideshow</title>
+
+  <link rel="stylesheet" href="/static/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/bootstrap-theme.min.css">
+  <style>
+    .carousel-inner > .item > img {
+    margin: 0 auto;
+    }
+  </style>
+  <script src="/static/jquery.min.js"></script>
+  <script src="/static/bootstrap.min.js"></script>
+
+  <script>
+    $(document).ready(function(){
+      $('[data-toggle="popover"]').popover();
+    });
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+
+</head>
+<body>
+  <!-- <nav class="navbar navbar-default navbar-fixed-top"> --> <!-- or navbar-inverse -->
+  <nav class="navbar navbar-default "> <!-- or navbar-inverse -->
+    <div class="container">  <!-- or container-fluid -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavBar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div class="navbar-brand" >{{ album.title }} Slideshow</div>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavBar">
+        <ul class="nav navbar-nav">
+          {% set num_photos_in_album = album.num_photos_in_album -%}
+          {% set num_photos_in_chunk = album.num_photos -%}
+          {% set num_chunks = album.num_chunks -%}
+          {% if (num_chunks > 1) -%}
+            {% for i in range(0, num_chunks) -%}
+              {% if i == album.chunk_num -%}
+                <li class="active"><a href="/slideshow/{{ album.id }}/{{ i + 1 }}">Set {{ i + 1 }}</a></li>
+              {% else -%}
+                <li><a href="/slideshow/{{ album.id }}/{{ i + 1 }}">Set {{ i + 1 }}</a></li>
+              {% endif -%}
+            {% endfor -%}
+          {% endif -%}
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/albums">Back to albums</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" data-spy="scroll" data-target="#navbar">  <!-- or container-fluid -->
+
+    <div class="row" id="section2">
+      <div class="col-sm-12">
+
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+           {% for id in range(0,num_photos_in_chunk) -%}
+                {% if id == 0 -%}
+                  <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                {% else -%}
+                  <li data-target="#myCarousel" data-slide-to="{{ id }}"></li>
+                {% endif -%}
+            {% endfor -%}
+          </ol>
+
+          <div class="carousel-inner" role="listbox" >
+          {% for photo in album.photos -%}
+            {% if loop.index == 1 -%}
+               <div class="item active" >
+                 <img src="/image/flickr/{{ album.owner_id }}/{{ album.id }}/{{ photo.id }}/photo" alt="{{ photo.title }} ({{ loop.index }})" />
+               </div>
+            {% else -%}
+                {% if loop.index <= num_photos_in_chunk -%}
+                   <div class="item" >
+                     <img src="/image/flickr/{{ album.owner_id }}/{{ album.id }}/{{ photo.id }}/photo" alt="{{ photo.title }} ({{ loop.index }})" />
+                   </div>
+                {% endif -%}
+            {% endif -%}
+          {% endfor -%}
+          </div>
+
+          <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+          
+        </div> <!-- end of carousel -->
+
+
+        {% for photo in album.photos -%}
+          {% if loop.index == 1 -%}
+            <div class="visible photo_info" id="photo_info_{{ loop.index }}">{{ photo.title }}    <a href="{{ photo.flickr_url }}">View on flickr</a></div>
+          {% else -%}
+            {% if loop.index <= num_photos_in_chunk -%}
+              <div class="invisible photo_info" id="photo_info_{{ loop.index }}">{{ photo.title }} <a href="{{ photo.flickr_url }}">View on flickr</a></div>
+            {% endif -%}
+          {% endif -%}
+        {% endfor -%}
+
+      </div>
+    </div>
+
+  </div>  <!-- end of container -->
+
+<script>
+// Normalize Carousel Heights - pass in Bootstrap Carousel items.
+$.fn.carouselHeights = function() {
+    var items = $(this), //grab all slides
+        heights = [], //create empty array to store height values
+        tallest; //create variable to make note of the tallest slide
+    var normalizeHeights = function() {
+        items.each(function() { //add heights to array
+            heights.push($(this).height()); 
+        });
+        tallest = Math.max.apply(null, heights); //cache largest value
+        items.each(function() {
+            $(this).children('img').css('height',tallest + 'px');
+            $(this).css('min-height',tallest + 'px');
+        });
+    };
+    normalizeHeights();
+    $(window).on('resize orientationchange', function () {
+        //reset vars
+        tallest = 0;
+        heights.length = 0;
+        items.each(function() {
+            $(this).css('min-height','0'); //reset min-height
+        }); 
+        normalizeHeights(); //run it again 
+    });
+};
+
+jQuery(function($){
+    $(window).on('load', function(){
+        $('#myCarousel .item').carouselHeights();
+    });
+});
+
+$('#myCarousel').bind('slide.bs.carousel', function(){
+    $('.photo_info').addClass('invisible');
+    var current_slide = $('div.active').index() + 1;  // + 1 because indexing starts at 0
+    if ( current_slide < $('div.photo_info').length ) { 
+        current_slide = current_slide + 1;
+    } else {
+        current_slide = 1;
+    }
+    var current_div = '#photo_info_' + current_slide;
+    var slidebottom = $('#myCarousel').position().top + $('#myCarousel').outerHeight(true);
+    var slideleft = $('#myCarousel').position().left;
+    $(current_div).removeClass('invisible').addClass('visible')
+        .css({
+            position: "absolute",
+            top: slidebottom,
+            left: slideleft
+        });
+});
+
+</script>
+
+</body>
+</html>

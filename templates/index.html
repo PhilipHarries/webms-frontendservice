@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>index</title>
+    <!--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+    <style>.content {padding-top: 80px;}</style>
+  </head>
+
+  <body>
+
+    {%- block topbar -%}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <h2>
+                    <a href="/" class="brand">Welcome to the personal website of {{ name }} Harries</a>
+                </h2>
+            </div>
+            <div class="navbar-collapse">
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    {%- endblock -%}
+
+    <div class="container">
+        <div class="content">
+            {% block page_header %}{% endblock %}
+            {% block content %}
+			<div>It's all a bit minimalist at the moment.  The site is being coded in the open on <a href=https://github.com/PhilipHarries/webms>github</a> and is ultimately envisaged as a fully containerised set of microservices.</div>
+		<div>Have a look at my <a href="/blogs">blog</a> (it's a microservice) or some of my <a href="/albums">photos from flickr</a> (through a microservice).</div>
+            {% endblock %}
+        </div>
+    </div>
+    {% block js_footer %}{% endblock %}
+  </body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ blogs[count].id }}</title>
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+    <style>.content {padding-top: 80px;}</style>
+  </head>
+
+  <body>
+
+    {%- block topbar -%}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <h2>
+                    <a href="/" class="brand">{{ blogs[count].title }}</a> <small>{{ blogs[count].description }}</small>
+                </h2>
+            </div>
+            <div class="navbar-collapse">
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    {%- endblock -%}
+
+
+    <div class="container">
+        <div class="content">
+            {% block page_header %}{% endblock %}
+            {% block content %}
+              <div><h3>{{ blogs[count].description }}</h3></div>
+              <div><strong> {{ blogs[count].author }}</strong></div>
+              <div><em>First posted: {{ blogs[count]["created-date"] }}</em></div>
+              <div><em>Updated: {{ blogs[count]["last-update"] }}</em></div>
+              <div>{{ blogs[count].content }}</div>
+              <div>tags: {{ blogs[count].tags }}</div>
+            {% endblock %}
+            {% if count != 0 -%}
+              <div><a href="/blog/{{ blogs[0].id }}">first ({{ blogs[0].title }})</a>
+              <div><a href="/blog/{{ blogs[count - 1 ].id }}">previous ( {{ blogs[count-1].title }})</a>
+            {% endif -%}
+            {% if count != ( blogs|length - 1 ) -%}
+              <div><a href="/blog/{{ blogs[count + 1].id }}">next ({{ blogs[count+1].title }})</a>
+              <div><a href="/blog/{{ blogs[blogs|length-1].id }}">latest ({{ blogs[blogs|length-1].title }})</a>
+            {% endif -%}
+            <div>
+        </div>
+    </div>
+    {% block js_footer %}{% endblock %}
+  </body>
+</html>

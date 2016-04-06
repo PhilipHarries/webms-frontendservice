@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ album.title }}</title>
+    <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+    <style>.content {padding-top: 80px;}</style>
+  </head>
+
+  <body>
+
+    {%- block topbar -%}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <h2>
+                    <a href="/" class="brand">{{ album.title }}</a> <small>{{ album.desc }}</small>
+                </h2>
+            </div>
+            <div class="navbar-collapse">
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    {%- endblock -%}
+
+
+    <div class="container">
+        <div class="content">
+            {% block page_header %}{% endblock %}
+            {% block content %}
+              <div><h2><a href="/slideshow/{{ album.id }}">{{ album.title }}</a></h3></div>
+              <div><h3>{{ album.desc }}</h3></div>
+                {% for photo in album.photos %}
+                  <div><a href="/photo/{{ album.id }}/{{ photo.id }}"><img src="{{ photo.thumbnail}}"></a>{{ photo.title }}</div>
+<!-- {u'flickr_url': u'https://www.flickr.com/photos/48361233@N02/24527556642', u'title': u'fl_Sicily_B_DSC_0226', u'thumbnail': u'http://localhost:5433/flickr/api/v1.0/thumbnail/Philip_UK/72157663289586909/24527556642', u'photo': u'http://localhost:5433/flickr/api/v1.0/photo/Philip_UK/72157663289586909/24527556642'} -->
+                {% endfor %}
+
+            {% endblock %}
+        </div>
+    </div>
+    {% block js_footer %}{% endblock %}
+  </body>
+</html>
