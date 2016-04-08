@@ -32,7 +32,7 @@
               <div><strong> {{ blogs[count].author }}</strong></div>
               <div><em>First posted: {{ blogs[count]["created-date"] }}</em></div>
               <div><em>Updated: {{ blogs[count]["last-update"] }}</em></div>
-              <div>{{ blogs[count].content }}</div>
+              <div>{{ blogs[count].content | safe }}</div>
               <div>tags: {{ blogs[count].tags }}</div>
             {% endblock %}
             {% if count != 0 -%}

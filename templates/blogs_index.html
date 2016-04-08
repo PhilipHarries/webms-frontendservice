@@ -32,7 +32,7 @@
                 {% for blog in blogs %}
                   <div><h2><a href={{ url_for('get_blog', blog_id=blog.id) }}>{{ blog.title }}</a></p></div>
                   <div><h3>{{ blog.description }}</h3></div>
-                  <div><p>{{ blog.content|truncate(100) }}</p></div>
+                  <div><p>{{ blog.content | truncate(100) | safe }}</p></div>
                   <div><strong>{{ blog.author }}</strong></div>
                   <div><em>First posted: {{ blog["created-date"] }}</em></div>
                   <div><em>Updated: {{ blog["last-update"] }}</em></div>
